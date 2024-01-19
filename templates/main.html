@@ -6,9 +6,10 @@
     <title>Study Budd</title>
 </head>
 <body>
-    <a href="/">
+    {% comment %} <a href="/">
         <h1>logo</h1>
-    </a>
+    </a> {% endcomment %}
+    {% include "navbar.html" %}     
     {% block content %}{% endblock %}
 </body>
 </html>

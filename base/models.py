@@ -18,6 +18,9 @@ class Room(models.Model):
     updated= models.DateTimeField(auto_now=True)   ## Time will be updated each time we save the model
     created= models.DateTimeField(auto_now_add=True) ## Time will be saved the very first time it was saved
 
+    class Meta:
+        ordering= ['-updated', '-created']
+
     def __str__(self):
         return self.name
     
