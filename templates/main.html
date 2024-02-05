@@ -9,7 +9,14 @@
     {% comment %} <a href="/">
         <h1>logo</h1>
     </a> {% endcomment %}
-    {% include "navbar.html" %}     
+    {% include "navbar.html" %} 
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}    
     {% block content %}{% endblock %}
 </body>
 </html>
