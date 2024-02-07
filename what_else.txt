@@ -1,0 +1,3 @@
+In the room view, we have added a functionality that if the user has commented in any room he/she will be added to the participants list of that room.
+Instead of this I wrote a functionality in room.html that if the person is participant in the room then only he can write his comment otherwise comment box will not be visible to him.
+ 
