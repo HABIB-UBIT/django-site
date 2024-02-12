@@ -97,15 +97,24 @@ def userProfile(request,pk):
 @login_required(login_url='login')
 def createroom(request):
     form= RoomForm()
+    topics= Topics.objects.all()
     if request.method == 'POST':
-        form= RoomForm(request.POST)
-        if form.is_valid():
-            room= form.save(commit=False)
-            room.host= request.user
-            room.save()
-            return redirect ('home')
+        topic_name= request.POST.get('topic')
+        topic, created= Topics.objects.get_or_create(name= topic_name)
+        Room.objects.create(
+            host= request.user,
+            topic= topic,
+            name= request.POST.get('name'),
+            description= request.POST.get('description')
+        )
+        # form= RoomForm(request.POST)
+        # if form.is_valid():
+        #     room= form.save(commit=False)
+        #     room.host= request.user
+        #     room.save()
+        return redirect ('home')
         
-    context={'form':form}
+    context={'form':form , 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
 ######### UPDATE FUNCTION ###########
@@ -113,15 +122,22 @@ def createroom(request):
 def updateroom(request,pk):
     room= Room.objects.get(id=pk)
     form= RoomForm(instance = room)
+    topics= Topics.objects.all()
     if request.user != room.host:
         return HttpResponse('You are not allowed to edit here')
     if request.method=='POST':
-        form= RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect ('home')
+        topic_name= request.POST.get('topic')
+        topic, created= Topics.objects.get_or_create(name= topic_name)
+        # form= RoomForm(request.POST, instance=room)
+        # if form.is_valid():
+        #     form.save()
+        room.name= request.POST.get('name')
+        room.topic= topic
+        room.description= request.POST.get('description')
+        room.save()
+        return redirect ('home')
 
-    context={'form': form}
+    context={'form': form, "topics": topics, "room": room}
     return render (request, 'base/room_form.html', context)
 
 ######### DELETE FUNCTION ###########
@@ -146,3 +162,14 @@ def deleteMessage(request,pk):
         message.delete()
         return redirect ('home')
     return render(request, 'base/delete.html', {'obj': message})
+
+@login_required(login_url='login')
+def updateUser(request):
+    user= request.user
+    form= UserForm(instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        form.save()
+        return redirect('profile', pk=user.id)
+
+    return render(request, 'base/update_user.html', {'form':form})
