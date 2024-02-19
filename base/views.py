@@ -64,7 +64,7 @@ def home(request):
         Q(description__icontains=q)
     )    
     ### this is what we call query set  query_set= ModelName.objects.method()
-    topics= Topics.objects.all()
+    topics= Topics.objects.all()[0:4]
     room_count= rooms.count()
     room_messages= Message.objects.filter(room__topic__name__icontains=q)
     context= {'rooms':rooms, 'topics':topics, 'room_count': room_count, 'room_messages': room_messages}
@@ -173,3 +173,12 @@ def updateUser(request):
         return redirect('profile', pk=user.id)
 
     return render(request, 'base/update_user.html', {'form':form})
+
+def topicsPage(request):
+    q= request.GET.get('q') if request.GET.get('q') != None else ''
+    topics= Topics.objects.filter(name__icontains=q)
+    return render(request, 'base/topics.html', {'topics': topics})
+
+def activityPage(request):
+    room_messages= Message.objects.all()
+    return render(request, 'base/activity.html',{'room_messages': room_messages})
